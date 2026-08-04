@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro interno de avisos - Escolaris</title>
+  <style>
+    @font-face{font-family:Poppins;src:url("assets/Poppins-Regular.otf") format("opentype");font-weight:400}
+    @font-face{font-family:Poppins;src:url("assets/Poppins-Medium.otf") format("opentype");font-weight:600}
+    @font-face{font-family:Poppins;src:url("assets/Poppins-ExtraBold.otf") format("opentype");font-weight:800}
+    :root{--azul:#244b5a;--azul2:#17324f;--amarillo:#f7be00;--naranja:#db6015;--rojo:#993921;--tinta:#000;--suave:#eef4f5;--borde:#cad8dc;--blanco:#fff}
+    *{box-sizing:border-box}
+    body{margin:0;background:#edf2f3;color:var(--tinta);font-family:Poppins,Arial,sans-serif;font-size:15px;font-weight:600}
+    .top{height:10px;background:linear-gradient(90deg,var(--azul) 0 66%,var(--amarillo) 66% 84%,var(--naranja) 84%)}
+    .shell{max-width:1040px;margin:28px auto;padding:0 20px 60px}
+    .hero{background:var(--azul);color:white;border-radius:22px;padding:26px 30px;display:grid;grid-template-columns:180px 1fr;gap:28px;align-items:center;box-shadow:0 12px 30px #244b5a25}
+    .hero img{width:170px;background:white;border-radius:12px;padding:12px}
+    .hero h1{font-size:26px;line-height:1.2;margin:0 0 8px;font-weight:800}
+    .hero p{margin:0;opacity:1;line-height:1.55}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+    .step{background:white;border:1px solid var(--borde);border-radius:14px;padding:13px;display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.25}
+    .step b{display:grid;place-items:center;min-width:28px;height:28px;border-radius:50%;background:var(--amarillo);color:var(--azul);font-size:15px}
+    .notice{background:#fff8df;border-left:5px solid var(--amarillo);border-radius:10px;padding:13px 16px;margin:14px 0;font-size:13px}
+    .card{background:white;border:1px solid var(--borde);border-radius:18px;margin:18px 0;padding:24px;box-shadow:0 5px 16px #244b5a10}
+    .card h2{color:var(--azul);font-size:19px;margin:0 0 5px;display:flex;gap:10px;align-items:center}
+    .badge{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--azul);color:white;font-size:14px}
+    .hint{font-size:12px;color:#000;margin:0 0 18px;font-weight:600}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .field{grid-column:span 4}.field.w6{grid-column:span 6}.field.w8{grid-column:span 8}.field.w12{grid-column:span 12}.field.w3{grid-column:span 3}
+    label,.label{display:block;font-size:12px;font-weight:600;color:var(--azul);margin-bottom:6px}
+    .req:after{content:" *";color:var(--naranja)}
+    input,select,textarea{width:100%;border:1px solid #b8c9ce;border-radius:10px;background:white;padding:11px 12px;font:inherit;color:var(--tinta);outline:none}
+    input::placeholder,textarea::placeholder{color:#000;opacity:1}
+    input:focus,select:focus,textarea:focus{border-color:var(--azul);box-shadow:0 0 0 3px #244b5a18}
+    textarea{min-height:80px;resize:vertical}
+    .checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+    .check{display:flex;align-items:flex-start;gap:9px;border:1px solid #d8e2e5;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.35;background:#fbfdfd}
+    .check input{width:17px;height:17px;margin:1px 0 0;accent-color:var(--azul);flex:0 0 auto}
+    .sub{color:var(--naranja);font-size:13px;margin:20px 0 9px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+    .actions{position:sticky;bottom:12px;background:#ffffffee;backdrop-filter:blur(8px);border:1px solid var(--borde);border-radius:16px;padding:13px;display:flex;gap:10px;justify-content:flex-end;box-shadow:0 8px 28px #244b5a25;z-index:5}
+    button{border:0;border-radius:11px;padding:12px 18px;font:600 14px Poppins,Arial;cursor:pointer}
+    .primary{background:var(--azul);color:white}.secondary{background:var(--amarillo);color:var(--azul)}.ghost{background:var(--suave);color:var(--azul)}
+    button:hover{filter:brightness(.96);transform:translateY(-1px)}
+    .error{border-color:#b64232!important;background:#fff7f5!important}.errorText{color:#a33a2c;font-size:12px;margin:8px 0 0;display:none}
+    .privacy{text-align:center;color:#000;font-size:11px;margin-top:20px;font-weight:600}
+    #printReport{display:none}
+    @media(max-width:760px){.hero{grid-template-columns:1fr}.hero img{width:150px}.steps{grid-template-columns:1fr 1fr}.field,.field.w3,.field.w6,.field.w8{grid-column:span 12}.checks{grid-template-columns:1fr}.actions{flex-wrap:wrap}.actions button{flex:1}.shell{padding:0 12px 40px}}
+    @media print{
+      @page{size:letter;margin:12mm}
+      body{background:white;font-family:Poppins,Arial,sans-serif;font-size:9.5pt;color:#000;font-weight:600}
+      .top,.shell{display:none!important}
+      #printReport{display:block!important}
+      .p-head{display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid var(--azul);padding-bottom:8px;margin-bottom:12px}
+      .p-head img{width:145px}.p-head div{text-align:right}.p-head h1{font-size:15pt;color:var(--azul);margin:0}.p-head p{margin:3px 0 0;font-size:8pt;color:#000;font-weight:600}
+      .p-strip{height:5px;background:linear-gradient(90deg,var(--amarillo) 0 65%,var(--naranja) 65%);margin-bottom:12px}
+      .p-conf{display:inline-block;background:var(--azul);color:white;padding:3px 9px;border-radius:8px;font-size:7.5pt;font-weight:600}
+      .p-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #aebfc4;border-radius:7px;overflow:hidden;margin:10px 0 12px}
+      .p-item{padding:7px 8px;border-right:1px solid #c9d5d8;border-bottom:1px solid #c9d5d8;min-height:42px}.p-item:nth-child(4n){border-right:0}.p-item:nth-last-child(-n+4){border-bottom:0}.p-item.span2{grid-column:span 2}
+      .p-label{font-size:7pt;text-transform:uppercase;color:#000;font-weight:600}.p-value{font-size:9pt;font-weight:600;margin-top:2px;overflow-wrap:anywhere}
+      .p-section{margin:11px 0;break-inside:avoid}.p-section h2{font-size:10.5pt;color:var(--azul);border-left:5px solid var(--amarillo);padding-left:8px;margin:0 0 6px}
+      .p-list{margin:0;padding:7px 10px 7px 24px;background:#f2f6f7;border-radius:7px;line-height:1.45}.p-empty{color:#000;font-style:italic}
+      .p-note{border:1px solid #c5d2d6;border-radius:7px;padding:8px;min-height:42px;white-space:pre-wrap}
+      .p-foot{margin-top:14px;border-top:1px solid #aebfc4;padding-top:8px;display:flex;justify-content:space-between;color:#000;font-size:7.5pt;font-weight:600}
+    }
+  </style>
+</head>
+<body>
+  <div class="top"></div>
+  <main class="shell">
+    <section class="hero">
+      <img src="assets/logo-escolaris.png" alt="Escolaris">
+      <div><h1>Registro interno de avisos y seguimiento académico</h1><p>Complete un registro por estudiante, curso y aviso. Este documento es de uso interno y respalda el seguimiento académico realizado.</p></div>
+    </section>
+
+    <div class="steps" aria-label="Instrucciones">
+      <div class="step"><b>1</b><span>Complete los datos.</span></div>
+      <div class="step"><b>2</b><span>Marque lo que aplica.</span></div>
+      <div class="step"><b>3</b><span>Descargue el PDF.</span></div>
+      <div class="step"><b>4</b><span>Adjúntelo al correo.</span></div>
+    </div>
+    <div class="notice"><strong>Importante:</strong> registre solamente hechos que pueda comprobar. Los campos con * son obligatorios. Al presionar <strong>“Descargar PDF”</strong>, elija <strong>“Guardar como PDF”</strong> en la ventana que se abrirá.</div>
+
+    <form id="form" novalidate>
+      <section class="card">
+        <h2><span class="badge">1</span> Datos del aviso</h2><p class="hint">Escriba la información tal como aparece en el sistema institucional.</p>
+        <div class="grid">
+          <div class="field w6"><label class="req" for="alumno">Nombre completo del estudiante</label><input id="alumno" required></div>
+          <div class="field w3"><label class="req" for="grado">Grado</label><input id="grado" placeholder="Ej. 7.º básico" required></div>
+          <div class="field w3"><label class="req" for="ciclo">Ciclo escolar</label><input id="ciclo" inputmode="numeric" required></div>
+          <div class="field w6"><label class="req" for="profesor">Profesor(a)</label><input id="profesor" required></div>
+          <div class="field w6"><label class="req" for="curso">Curso</label><input id="curso" required></div>
+          <div class="field w3"><label class="req" for="aviso">Número de alerta académica</label><select id="aviso" required><option value="">Seleccione</option><option>Alerta 1</option><option>Alerta 2</option><option>Alerta 3</option><option>Alerta 4</option></select></div>
+          <div class="field w3"><label class="req" for="bloque">Bloque</label><select id="bloque" required><option value="">Seleccione</option><option>Bloque 1</option><option>Bloque 2</option><option>Bloque 3</option><option>Bloque 4</option><option>Bloque 5</option></select></div>
+          <div class="field w3"><label class="req" for="fecha">Fecha del aviso</label><input id="fecha" type="date" required></div>
+          <div class="field w3"><label class="req" for="punteo">Punteo actual</label><input id="punteo" type="number" min="0" max="100" step="0.01" placeholder="0 a 100" required></div>
+          <div class="field w3"><label for="ultimoIngreso">Último ingreso a plataforma</label><input id="ultimoIngreso" type="date"></div>
+          <div class="field w3"><label for="tiempoSinIngresar">Tiempo sin ingresar</label><input id="tiempoSinIngresar" placeholder="Ej. 18 días"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><span class="badge">2</span> Motivo del seguimiento</h2><p class="hint">Marque únicamente las situaciones que puede comprobar en la plataforma.</p>
+        <div class="sub">Actividad en la plataforma</div>
+        <div class="checks" data-group="motivos">
+          <label class="check"><input type="checkbox" value="Presenta poca actividad en la plataforma"><span>Presenta poca actividad en la plataforma.</span></label>
+          <label class="check"><input type="checkbox" value="No ha ingresado a la plataforma"><span>No ha ingresado a la plataforma.</span></label>
+          <label class="check"><input type="checkbox" value="Ha permanecido varios días o meses sin ingresar"><span>Ha permanecido varios días o meses sin ingresar.</span></label>
+          <label class="check"><input type="checkbox" value="No ha revisado la retroalimentación del docente"><span>No ha revisado la retroalimentación del docente.</span></label>
+        </div>
+        <div class="sub">Tareas y oportunidades de mejora</div>
+        <div class="checks" data-group="motivos">
+          <label class="check"><input type="checkbox" value="Tiene tareas pendientes de entrega"><span>Tiene tareas pendientes de entrega.</span></label>
+          <label class="check"><input type="checkbox" value="Tiene tareas sin evidencia verificable"><span>Tiene tareas sin evidencia verificable.</span></label>
+          <label class="check"><input type="checkbox" value="Tiene tareas para corregir y no lo ha realizado"><span>Tiene tareas para corregir y no lo ha realizado.</span></label>
+          <label class="check"><input type="checkbox" value="No ha aprovechado las oportunidades de mejora"><span>No ha aprovechado las oportunidades de mejora.</span></label>
+          <label class="check"><input type="checkbox" value="No ha entregado tareas desde el bloque indicado"><span>No ha entregado tareas desde el bloque indicado.</span></label>
+          <label class="check"><input type="checkbox" value="Presenta entregas incompletas o archivos incorrectos"><span>Presenta entregas incompletas o archivos incorrectos.</span></label>
+        </div>
+        <div class="sub">Rendimiento</div>
+        <div class="checks" data-group="motivos">
+          <label class="check"><input type="checkbox" value="Presenta punteo bajo"><span>Presenta punteo bajo.</span></label>
+          <label class="check"><input type="checkbox" value="Su punteo acumulado es inferior a 60 puntos"><span>Su punteo acumulado es inferior a 60 puntos.</span></label>
+          <label class="check"><input type="checkbox" value="Necesita mejorar durante el bloque actual para alcanzar 60 puntos"><span>Necesita mejorar durante el bloque actual para alcanzar 60 puntos.</span></label>
+          <label class="check"><input type="checkbox" value="Su desempeño actual requiere seguimiento para aprobar el curso"><span>Su desempeño actual requiere seguimiento para aprobar el curso.</span></label>
+        </div>
+        <p id="motivoError" class="errorText">Marque al menos un motivo.</p>
+        <div class="grid" style="margin-top:14px"><div class="field w12"><label for="detalle">Detalle breve (opcional)</label><textarea id="detalle" maxlength="350" placeholder="Ej. No entrega actividades desde el bloque 2. Evite opiniones; escriba datos concretos."></textarea></div></div>
+      </section>
+
+      <section class="card">
+        <h2><span class="badge">3</span> Recomendaciones al estudiante</h2><p class="hint">Marque qué se le recomendó o qué sugerencias se le dieron al estudiante.</p>
+        <div class="checks" data-group="acciones">
+          <label class="check"><input type="checkbox" value="Ingresar regularmente a la plataforma"><span>Ingresar regularmente a la plataforma.</span></label>
+          <label class="check"><input type="checkbox" value="Entregar las tareas pendientes"><span>Entregar las tareas pendientes.</span></label>
+          <label class="check"><input type="checkbox" value="Corregir las tareas indicadas"><span>Corregir las tareas indicadas.</span></label>
+          <label class="check"><input type="checkbox" value="Revisar la retroalimentación del docente"><span>Revisar la retroalimentación del docente.</span></label>
+          <label class="check"><input type="checkbox" value="Completar las oportunidades de mejora"><span>Completar las oportunidades de mejora.</span></label>
+          <label class="check"><input type="checkbox" value="Comunicarse con el docente"><span>Comunicarse con el docente.</span></label>
+          <label class="check"><input type="checkbox" value="Dar prioridad a las actividades del bloque actual"><span>Dar prioridad a las actividades del bloque actual.</span></label>
+          <label class="check"><input type="checkbox" value="Cumplir con el plan de recuperación indicado"><span>Cumplir con el plan de recuperación indicado.</span></label>
+        </div>
+        <p id="accionError" class="errorText">Marque al menos una acción.</p>
+      </section>
+
+      <section class="card">
+        <h2><span class="badge">4</span> Envío y respuesta</h2><p class="hint">Envíe este formulario únicamente a los destinatarios institucionales indicados a continuación.</p>
+        <div class="grid">
+          <div class="field w6"><label for="respuesta">¿Hubo respuesta del padre, encargado o estudiante?</label><select id="respuesta"><option>No</option><option>Sí</option></select></div>
+          <div class="field w6"><label for="fechaRespuesta">Fecha de respuesta</label><input id="fechaRespuesta" type="date"></div>
+          <div class="field w12">
+            <span class="label">Destinatarios institucionales del correo</span>
+            <div class="checks">
+              <div class="check"><span><strong>Director</strong><br>jrodriguez@escolaris.edu.gt</span></div>
+              <div class="check"><span><strong>Coordinación Académica</strong><br>sramires@escolaris.edu.gt</span></div>
+              <div class="check"><span><strong>Asistente de Coordinación</strong><br>cmedina@escolaris.edu.gt</span></div>
+              <div class="check"><span><strong>Coordinación de Área</strong><br>jgodinez@escolaris.edu.gt</span></div>
+              <div class="check"><span><strong>Coordinación de Área</strong><br>poregel@escolaris.edu.gt</span></div>
+              <div class="check"><span><strong>Coordinación de Área</strong><br>ipalacios@escolaris.edu.gt</span></div>
+            </div>
+          </div>
+          <div class="field w12"><label for="observacion">Observación breve (opcional)</label><textarea id="observacion" maxlength="350" placeholder="Ej. El encargado confirmó que dará seguimiento. No incluya información innecesaria."></textarea></div>
+        </div>
+      </section>
+      <p id="formError" class="errorText" style="text-align:center">Revise los campos marcados antes de generar el PDF.</p>
+      <div class="actions">
+        <button type="button" class="ghost" id="clearBtn">Limpiar</button>
+        <button type="button" class="primary" id="pdfBtn">Descargar PDF</button>
+      </div>
+    </form>
+    <p class="privacy">Uso interno y confidencial. El formulario no envía ni almacena información en internet.</p>
+  </main>
+
+  <article id="printReport" aria-hidden="true">
+    <header class="p-head"><img src="assets/logo-escolaris.png" alt="Escolaris"><div><h1>Registro interno de alerta académica</h1><p id="pSubtitle"></p></div></header><div class="p-strip"></div>
+    <span class="p-conf">USO INTERNO Y CONFIDENCIAL</span>
+    <div class="p-grid" id="pGrid"></div>
+    <section class="p-section"><h2>Motivo del seguimiento</h2><ul class="p-list" id="pMotivos"></ul></section>
+    <section class="p-section"><h2>Detalle registrado</h2><div class="p-note" id="pDetalle"></div></section>
+    <section class="p-section"><h2>Recomendaciones al estudiante</h2><ul class="p-list" id="pAcciones"></ul></section>
+    <section class="p-section"><h2>Envío y respuesta</h2><div class="p-grid" id="pEvidencia"></div></section>
+    <section class="p-section"><h2>Observación</h2><div class="p-note" id="pObservacion"></div></section>
+    <footer class="p-foot"><span>Documento generado por el docente para respaldo institucional.</span><span id="pGenerated"></span></footer>
+  </article>
+
+  <script>
+    const $=id=>document.getElementById(id);
+    const val=id=>$(id).value.trim();
+    const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const chosen=group=>[...document.querySelectorAll(`[data-group="${group}"] input:checked`)].map(x=>x.value);
+    const niceDate=s=>s?new Intl.DateTimeFormat('es-GT',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(s+'T12:00:00')):'No registrado';
+    const niceDateTime=s=>s?new Intl.DateTimeFormat('es-GT',{dateStyle:'short',timeStyle:'short'}).format(new Date(s)):'No registrado';
+    const slug=s=>(s||'Sin-dato').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'');
+    $('ciclo').value=new Date().getFullYear(); $('fecha').value=new Date().toISOString().slice(0,10);
+
+    function item(label,value,span=false){return `<div class="p-item${span?' span2':''}"><div class="p-label">${esc(label)}</div><div class="p-value">${esc(value||'No registrado')}</div></div>`}
+    function fillList(id,items){$(id).innerHTML=items.length?items.map(x=>`<li>${esc(x)}</li>`).join(''):'<li class="p-empty">Sin información registrada.</li>'}
+    function validate(){
+      let ok=true; document.querySelectorAll('[required]').forEach(x=>{const bad=!x.value.trim();x.classList.toggle('error',bad);if(bad)ok=false});
+      const m=chosen('motivos'),a=chosen('acciones');$('motivoError').style.display=m.length?'none':'block';$('accionError').style.display=a.length?'none':'block';
+      if(!m.length||!a.length)ok=false;$('formError').style.display=ok?'none':'block';if(!ok)document.querySelector('.error,[style*="display: block"]')?.scrollIntoView({behavior:'smooth',block:'center'});return ok;
+    }
+    function buildReport(){
+      if(!validate())return false;
+      $('pSubtitle').textContent=`${val('aviso')} · ${niceDate(val('fecha'))}`;
+      $('pGrid').innerHTML=item('Estudiante',val('alumno'),true)+item('Grado',val('grado'))+item('Ciclo escolar',val('ciclo'))+item('Profesor(a)',val('profesor'),true)+item('Curso',val('curso'))+item('Bloque',val('bloque'))+item('Punteo actual',val('punteo')+' puntos')+item('Último ingreso',niceDate(val('ultimoIngreso')))+item('Tiempo sin ingresar',val('tiempoSinIngresar'))+item('Número de alerta académica',val('aviso'));
+      fillList('pMotivos',chosen('motivos'));fillList('pAcciones',chosen('acciones'));
+      $('pDetalle').textContent=val('detalle')||'Sin detalle adicional.';$('pObservacion').textContent=val('observacion')||'Sin observación adicional.';
+      $('pEvidencia').innerHTML=item('Respuesta recibida',val('respuesta'),true)+item('Fecha de respuesta',niceDate(val('fechaRespuesta')),true)+item('Destinatarios institucionales','Enviar únicamente a Dirección, Coordinación Académica, Asistente de Coordinación y Coordinaciones de Área.',true);
+      $('pGenerated').textContent='Generado: '+new Intl.DateTimeFormat('es-GT',{dateStyle:'short',timeStyle:'short'}).format(new Date());
+      document.title=`Alerta-${val('aviso').replace('Alerta ','')}_${slug(val('alumno'))}_${slug(val('curso'))}_${val('ciclo')}`;return true;
+    }
+    $('pdfBtn').addEventListener('click',()=>{if(buildReport())window.print()});
+    $('clearBtn').addEventListener('click',()=>{if(confirm('¿Desea borrar toda la información de esta alerta académica?')){document.getElementById('form').reset();$('ciclo').value=new Date().getFullYear();$('fecha').value=new Date().toISOString().slice(0,10);$('respuesta').value='No';document.title='Registro interno de alertas académicas - Escolaris'}});
+    document.querySelectorAll('[required]').forEach(x=>x.addEventListener('input',()=>x.classList.remove('error')));
+    window.addEventListener('afterprint',()=>{setTimeout(()=>document.title='Registro interno de alertas académicas - Escolaris',500)});
+  </script>
+</body>
+</html>
